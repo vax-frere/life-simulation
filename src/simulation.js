@@ -1,5 +1,5 @@
 import Stats from 'stats.js';
-import * as dat from 'dat.gui';
+import { Pane } from 'tweakpane';
 import { Grid } from './grid.js';
 
 export class Simulation {
@@ -30,20 +30,21 @@ export class Simulation {
         this.canvas.addEventListener('mouseup', this.handleMouseUp.bind(this));
         this.canvas.addEventListener('mousemove', this.handleMouseMove.bind(this));
 
-        // Initialiser dat.gui
-        this.gui = new dat.GUI();
+        // Initialiser tweakpane
+        this.pane = new Pane();
         this.settings = {
             depositAmount: 255, // Valeur initiale de dépôt du composant (sur une échelle de 0 à 255)
             updateInterval: 10, // Intervalle de mise à jour en ms (approx. 60 FPS)
             viscosity: this.component.viscosity, // Viscosité initiale du composant
-            totalComponent: '0' // Quantité totale initiale de composant
+            totalComponent: 0 // Quantité totale initiale de composant
         };
-        this.gui.add(this.settings, 'depositAmount', 1, 255).name('Deposit Amount');
-        this.gui.add(this.settings, 'updateInterval', 10, 100).name('Update Interval (ms)');
-        this.gui.add(this.settings, 'viscosity', 0, 1, 0.01).name('Viscosity').onChange((value) => {
-            this.component.viscosity = value;
+
+        this.pane.addBinding(this.settings, 'depositAmount', { min: 1, max: 255, step: 1 });
+        this.pane.addBinding(this.settings, 'updateInterval', { min: 10, max: 100, step: 1 });
+        this.pane.addBinding(this.settings, 'viscosity', { min: 0, max: 1, step: 0.01 }).on('change', (ev) => {
+            this.component.viscosity = ev.value;
         });
-        this.gui.add(this.settings, 'totalComponent').name('Total Component').listen();
+        this.pane.addBinding(this.settings, 'totalComponent', { readonly: true });
 
         // Initialiser stats.js
         this.stats = new Stats();
@@ -79,7 +80,7 @@ export class Simulation {
         const x = Math.floor((event.clientX - rect.left) * (this.width / rect.width) / this.scale);
         const y = Math.floor((event.clientY - rect.top) * (this.height / rect.height) / this.scale);
         const currentValue = this.component.grid.getCell(x, y);
-        const newValue = Math.min(255, currentValue + this.settings.depositAmount); // Utiliser la quantité spécifiée dans dat.gui (0-255)
+        const newValue = Math.min(255, currentValue + this.settings.depositAmount); // Utiliser la quantité spécifiée dans tweakpane (0-255)
         this.component.grid.setCell(x, y, newValue);
         this.depositedGrid.setCell(x, y, 1); // Marquer la cellule comme contenant un composant déposé
     }
@@ -88,8 +89,11 @@ export class Simulation {
     spreadComponent() {
         const width = this.component.grid.width;
         const height = this.component.grid.height;
-        const newMatrix = this.component.grid.matrix.map((row, y) => {
-            return row.map((value, x) => {
+        const newMatrix = this.component.grid.matrix.map(row => [...row]); // Cloner la matrice
+
+        for (let y = 0; y < height; y++) {
+            for (let x = 0; x < width; x++) {
+                let value = this.component.grid.getCell(x, y);
                 if (value > 0) {
                     const neighbors = [
                         [x - 1, y],
@@ -98,25 +102,24 @@ export class Simulation {
                         [x, y + 1]
                     ];
 
-                    // Compter les voisins valides
+                    // Compter les voisins dans la grille
                     const validNeighbors = neighbors.filter(([nx, ny]) => nx >= 0 && nx < width && ny >= 0 && ny < height);
                     const neighborCount = validNeighbors.length;
 
                     // Calculer la quantité à diffuser par voisin
-                    const totalSpreadAmount = value * this.component.viscosity * 0.1;
-                    const spreadAmountPerNeighbor = totalSpreadAmount / neighborCount;
+                    const spreadAmountPerNeighbor = value / neighborCount;
 
                     // Distribuer la quantité diffusée et ajuster la cellule source
                     validNeighbors.forEach(([nx, ny]) => {
                         const currentNeighborValue = this.component.grid.getCell(nx, ny);
-                        this.component.grid.setCell(nx, ny, Math.min(255, currentNeighborValue + spreadAmountPerNeighbor));
+                        newMatrix[ny][nx] = Math.min(255, currentNeighborValue + spreadAmountPerNeighbor);
                     });
 
-                    value -= totalSpreadAmount;
+                    value -= spreadAmountPerNeighbor * neighborCount;
                 }
-                return value;
-            });
-        });
+                newMatrix[y][x] += value;
+            }
+        }
 
         this.component.grid.matrix = newMatrix;
     }
@@ -172,7 +175,7 @@ export class Simulation {
 
             // Calculer et afficher la quantité totale de composant
             const totalComponent = this.calculateTotalComponent();
-            this.settings.totalComponent = totalComponent.toString();
+            this.settings.totalComponent = totalComponent;
 
             this.lastUpdate = now;
         }

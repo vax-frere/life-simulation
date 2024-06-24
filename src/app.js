@@ -16,7 +16,7 @@ if (canvas) {
     const component = new Component('A', '#0000FF', 1.0, 0.2, componentGrid); // Couleur bleue spécifiée en hexadécimal, réactivité 1.0, viscosité 0.5
 
     // Initialiser la réaction chimique avec la grille du composant uniquement
-    const reaction = new Simulation(canvas, component, scale);
+    const simulation = new Simulation(canvas, component, scale);
 } else {
     console.error('Canvas element not found');
 }
