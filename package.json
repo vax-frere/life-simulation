@@ -19,6 +19,7 @@
     "vite": "^5.3.1"
   },
   "dependencies": {
+    "braces": "3.0.3",
     "dat.gui": "^0.7.9",
     "mathjs": "^13.0.0",
     "stats.js": "^0.17.0",
