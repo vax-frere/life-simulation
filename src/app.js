@@ -10,7 +10,7 @@ if (canvas) {
     canvas.height = 500; // Vous pouvez définir la hauteur du canevas ici
 
     // Initialiser la grille pour le composant
-    const componentGrid = new Grid(canvas.width / scale, canvas.height / scale);
+    const componentGrid = new Grid(canvas.width / scale , canvas.height / scale);
 
     // Initialiser le composant avec des propriétés spécifiques
     const component = new Component('A', '#0000FF', 1.0, 0.2, componentGrid); // Couleur bleue spécifiée en hexadécimal, réactivité 1.0, viscosité 0.5

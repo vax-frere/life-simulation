@@ -11,6 +11,9 @@ dependencies:
   dat.gui:
     specifier: ^0.7.9
     version: 0.7.9
+  grep:
+    specifier: ^0.1.0
+    version: 0.1.0
   mathjs:
     specifier: ^13.0.0
     version: 13.0.0
@@ -891,6 +894,11 @@ packages:
   /graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
     dev: true
+
+  /grep@0.1.0:
+    resolution: {integrity: sha512-UNl3aKmGpK1Jocger8XN3hNt1gghfEOtlNbTFSVOEa5cNae2OJdG93n4m8d84pOUlIirefuaSF9qYHj0RIfBMA==}
+    engines: {node: '>= 0.6.x'}
+    dev: false
 
   /has-value@0.3.1:
     resolution: {integrity: sha512-gpG936j8/MzaeID5Yif+577c17TxaDmhuyVgSwtnL/q8UUTySg8Mecb+8Cf1otgLoD7DDH75axp86ER7LFsf3Q==}
