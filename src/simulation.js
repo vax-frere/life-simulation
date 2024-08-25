@@ -2,7 +2,6 @@ import Stats from 'stats.js';
 import { Pane } from 'tweakpane';
 import { Component } from './component.js';
 
-
 export class Simulation {
     constructor(canvas, componentSpecs, scale) {
         if (!(canvas instanceof HTMLCanvasElement)) {
@@ -43,7 +42,7 @@ export class Simulation {
         this.pane = new Pane();
         this.settings = {
             depositAmount: 255,
-            updateInterval: 10,
+            updateInterval: 1,
             maxTotalComponent: 1000000,
             maxCellCapacity: 255
         };
@@ -51,7 +50,7 @@ export class Simulation {
         this.pane = new Pane();
 
         this.pane.addBinding(this.settings, 'depositAmount', { min: 1, max: 255, step: 1 });
-        this.pane.addBinding(this.settings, 'updateInterval', { min: 10, max: 100, step: 1 });
+        this.pane.addBinding(this.settings, 'updateInterval', { min: 1, max: 100, step: 1 });
         this.pane.addBinding(this.settings, 'maxTotalComponent', { min: 100000, max: 10000000, step: 100000 });
         this.pane.addBinding(this.settings, 'maxCellCapacity', {
             min: 1,

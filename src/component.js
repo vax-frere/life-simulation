@@ -10,7 +10,7 @@ export class Component {
     }
 
     createBuffer(width, height) {
-        return Array.from({ length: height }, () => new Array(width).fill(255));
+        return Array.from({ length: height }, () => new Array(width).fill(0));
     }
 
     getCell(x, y) {
