@@ -6,17 +6,18 @@ import { Simulation } from './simulation.js';
 const canvas = document.getElementById('world');
 if (canvas) {
     const scale = 1; // Échelle de la grille (chaque cellule de la grille est de 5x5 pixels)
-    canvas.width = 500; // Vous pouvez définir la largeur du canevas ici
-    canvas.height = 500; // Vous pouvez définir la hauteur du canevas ici
+    canvas.width = 100; // Vous pouvez définir la largeur du canevas ici
+    canvas.height = 100; // Vous pouvez définir la hauteur du canevas ici
 
     // Initialiser la grille pour le composant
     const componentGrid = new Grid(canvas.width / scale , canvas.height / scale);
 
-    // Initialiser le composant avec des propriétés spécifiques
-    const component = new Component('A', '#0000FF', 1.0, 0.2, componentGrid); // Couleur bleue spécifiée en hexadécimal, réactivité 1.0, viscosité 0.5
+    // Initialiser le composant avec des propriétés spécifiques (name, color, reactivity, viscosity, width, height)
+    const componentA = new Component('A', '#000000', 1, 1);
+    const componentB = new Component('B', '#FFAA00', 1, 1);
 
     // Initialiser la réaction chimique avec la grille du composant uniquement
-    const simulation = new Simulation(canvas, component, scale);
+    const simulation = new Simulation(canvas, [componentA, componentB], scale);
 } else {
     console.error('Canvas element not found');
 }
